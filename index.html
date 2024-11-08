@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Psicológico STAR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('img/imagen.test2.jpg');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: #e91e63;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #c2185b;
+        }
+
+        #loginForm {
+            display: block;
+        }
+
+        #testForm {
+            display: none;
+        }
+
+        .question {
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .question h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .options {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .option {
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .option input[type="radio"] {
+            display: none;
+        }
+
+        .option label {
+            display: block;
+            padding: 0.5rem;
+            background: #f5f5f5;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option input[type="radio"]:checked + label {
+            background: #e91e63;
+            color: white;
+        }
+
+        #results {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .progress-container {
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: #e91e63;
+            width: 0;
+            transition: width 0.3s;
+        }
+
+        .nextButton {
+            margin-top: 1rem;
+        }
+
+        .question-text {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        .scale-legend {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .scale-legend h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .scale-legend ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .scale-legend li {
+            margin: 0.3rem 0;
+            color: #495057;
+            display: flex;
+            align-items: center;
+        }
+
+        .scale-legend .number {
+            font-weight: bold;
+            margin-right: 0.5rem;
+            min-width: 25px;
+            color: #e91e63;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Formulario de Login -->
+        <form id="loginForm">
+            <h2>Login del test</h2>
+            <div class="form-group">
+                <label for="fullName">Nombre Completo</label>
+                <input type="text" id="fullName" required>
+            </div>
+            <div class="form-group">
+                <label for="position">Cargo</label>
+                <input type="text" id="position" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Teléfono</label>
+                <input type="tel" id="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Fecha de Inicio</label>
+                <input type="date" id="startDate" required>
+            </div>
+            <button type="submit">INICIAR TEST</button>
+        </form>
+
+        <!-- Formulario del Test -->
+        <form id="testForm">
+            <h2>Test de Competencias Laborales</h2>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+            </div>
+            <div class="scale-legend">
+                <h4>Escala de Valoración:</h4>
+                <ul>
+                    <li><span class="number">1</span> = Totalmente en desacuerdo</li>
+                    <li><span class="number">2</span> = En desacuerdo</li>
+                    <li><span class="number">3</span> = Neutral</li>
+                    <li><span class="number">4</span> = De acuerdo</li>
+                    <li><span class="number">5</span> = Totalmente de acuerdo</li>
+                </ul>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+            </div>
+            <div id="questionContainer"></div>
+            <button type="button" class="nextButton">SIGUIENTE</button>
+        </form>
+
+        <!-- Resultados -->
+        <div id="results">
+            <h2>Resultados del Test</h2>
+            <div id="scoreDisplay"></div>
+            <div id="interpretation"></div>
+        </div>
+    </div>
+
+    <script>
+        // Array completo de preguntas del test
+        const questions = [
+            {
+                category: "Adaptabilidad y Flexibilidad",
+                text: "Cuando los planes de trabajo cambiaron de forma inesperada, pude adaptarme rápidamente sin que mi productividad se viera afectada."
+            },
+            {
+                category: "Adaptabilidad y Flexibilidad",
+                text: "Cuando me enfrenté a una nueva tarea que no estaba prevista, logré gestionarla con éxito."
+            },
+            {
+                category: "Trabajo en Equipo",
+                text: "En proyectos grupales, siempre colaboro activamente para asegurarme de que el equipo logre sus metas."
+            },
+            {
+                category: "Trabajo en Equipo",
+                text: "Cuando surgieron desacuerdos dentro de un equipo, tomé la iniciativa para resolverlos de manera efectiva."
+            },
+            {
+                category: "Resolución de Problemas",
+                text: "Cuando me enfrenté a un problema complejo, pude encontrar soluciones creativas que fueron bien recibidas por mi equipo."
+            },
+            {
+                category: "Resolución de Problemas",
+                text: "En una situación difícil, tomé la decisión correcta rápidamente para resolver el problema."
+            },
+            {
+                category: "Gestión del Tiempo y Organización",
+                text: "Cuando tenía varias tareas urgentes, logré priorizarlas adecuadamente para cumplir con los plazos establecidos."
+            },
+            {
+                category: "Gestión del Tiempo y Organización",
+                text: "Durante los proyectos con plazos ajustados, organicé mi tiempo de manera eficiente para asegurarme de cumplir con los objetivos."
+            },
+            {
+                category: "Liderazgo",
+                text: "En mi rol, tomé la iniciativa de liderar proyectos o tareas importantes, guiando a mi equipo hacia el éxito."
+            },
+            {
+                category: "Liderazgo",
+                text: "Cuando fue necesario, motivé a mi equipo para alcanzar metas desafiantes, ayudando a mantener el enfoque en los objetivos."
+            },
+            {
+                category: "Comunicación Efectiva",
+                text: "Cuando tuve que comunicar información compleja, lo hice de manera clara para que todos los involucrados comprendieran los detalles."
+            },
+            {
+                category: "Comunicación Efectiva",
+                text: "Al brindar retroalimentación, me aseguré de ser claro, respetuoso y constructivo, ayudando a mis compañeros a mejorar su desempeño."
+            },
+            {
+                category: "Orientación a Resultados",
+                text: "Me aseguré de cumplir con los objetivos y metas de trabajo, sin importar los obstáculos que surgieran."
+            },
+            {
+                category: "Orientación a Resultados",
+                text: "Cuando me propuse una meta en el trabajo, trabajé consistentemente para alcanzarla, incluso cuando hubo dificultades."
+            },
+            {
+                category: "Manejo del Estrés",
+                text: "En situaciones de presión, mantuve la calma y pude continuar trabajando de manera eficiente."
+            },
+            {
+                category: "Manejo del Estrés",
+                text: "Cuando me enfrenté a plazos ajustados y tareas estresantes, logré controlar mis emociones y centrarme en el trabajo."
+            },
+            {
+                category: "Innovación y Mejora Continua",
+                text: "Busqué y propuse mejoras en los procesos laborales para hacerlos más eficientes."
+            },
+            {
+                category: "Innovación y Mejora Continua",
+                text: "Cuando identifico una forma de mejorar el desempeño, me esfuerzo por implementarla en mi trabajo o en el de mi equipo."
+            },
+            {
+                category: "Empatía y Relaciones Interpersonales",
+                text: "Cuando un compañero de trabajo tenía un problema personal o profesional, me ofrecí para apoyarlo y ayudarlo a superar la situación."
+            },
+            {
+                category: "Empatía y Relaciones Interpersonales",
+                text: "Entiendo y soy consciente de las emociones de los demás, lo que me ayuda a mejorar la dinámica del equipo."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = [];
+
+        // Manejo del formulario de login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validar que todos los campos estén llenos
+            const inputs = this.querySelectorAll('input');
+            let allFilled = true;
+            inputs.forEach(input => {
+                if (!input.value) {
+                    allFilled = false;
+                }
+            });
+
+            if (!allFilled) {
+                alert('Por favor, complete todos los campos');
+                return;
+            }
+
+            const userData = {
+                fullName: document.getElementById('fullName').value,
+                position: document.getElementById('position').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                startDate: document.getElementById('startDate').value
+            };
+            
+            // Guardar datos del usuario
+            localStorage.setItem('userData', JSON.stringify(userData));
+            
+            // Mostrar el test y ocultar el login
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('testForm').style.display = 'block';
+            
+            // Cargar primera pregunta
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            const questionContainer = document.getElementById('questionContainer');
+            const progress = document.querySelector('.progress');
+            const nextButton = document.querySelector('.nextButton');
+            
+            if (currentQuestion < questions.length) {
+                const question = questions[currentQuestion];
+                progress.style.width = `${(currentQuestion / questions.length) * 100}%`;
+                
+                questionContainer.innerHTML = `
+                    <div class="question">
+                        <h3>${question.category}</h3>
+                        <p class="question-text">${question.text}</p>
+                        <div class="options">
+                            ${[1,2,3,4,5].map(value => `
+                                <div class="option">
+                                    <input type="radio" name="q${currentQuestion}" value="${value}" id="q${currentQuestion}o${value}" required>
+                                    <label for="q${currentQuestion}o${value}">${value}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+
+                // Cambiar el texto del botón en la última pregunta
+                if (currentQuestion === questions.length - 1) {
+                    nextButton.textContent = 'FINALIZAR TEST';
+                }
+            }
+        }
+
+        // Manejo del botón siguiente/finalizar
+        document.querySelector('.nextButton').addEventListener('click', function() {
+            const answer = document.querySelector(`input[name="q${currentQuestion}"]:checked`);
+            
+            if (!answer) {
+                alert('Por favor, seleccione una respuesta');
+                return;
+            }
+
+            answers.push(parseInt(answer.value));
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        function showResults() {
+            const totalScore = answers.reduce((a, b) => a + b, 0);
+            const maxScore = questions.length * 5;
+            const percentage = (totalScore / maxScore) * 100;
+            
+            let interpretation = '';
+            if (percentage >= 80) {
+                interpretation = 'Competencias laborales altamente desarrolladas. El candidato tiene una fuerte capacidad para manejar situaciones complejas en el entorno laboral, con habilidades destacadas en trabajo en equipo, liderazgo y manejo del estrés.';
+            } else if (percentage >= 60) {
+                interpretation = 'Competencias laborales adecuadas. El candidato muestra un buen manejo de las habilidades necesarias en el trabajo, aunque algunas áreas pueden necesitar un poco más de desarrollo.';
+            } else if (percentage >= 40) {
+                interpretation = 'Competencias laborales en desarrollo. El candidato tiene ciertas competencias laborales, pero existen áreas clave que requieren mejorar para ser más eficiente en el entorno laboral.';
+            } else {
+                interpretation = 'Competencias laborales bajas. El candidato podría tener dificultades para manejar situaciones clave en el trabajo. Se recomienda enfocarse en el desarrollo de estas habilidades.';
+            }
+
+            document.getElementById('testForm').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('scoreDisplay').innerHTML = `
+                <h3>Puntuación Total: ${totalScore} de ${maxScore} puntos</h3>
+                <h4>Porcentaje: ${percentage.toFixed(2)}%</h4>
+            `;
+            document.getElementById('interpretation').innerHTML = `
+                <p><strong>Interpretación:</strong> ${interpretation}</p>
+            `;
+        }
+    </script>
